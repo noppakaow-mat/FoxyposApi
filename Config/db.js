@@ -10,6 +10,6 @@ const pool = new Pool({
 });
 
 pool.on("connect", () => {
-    console.log("🟢 PostgreSQL connected");
+    console.log("PostgreSQL connected");
 });
 module.exports = pool;

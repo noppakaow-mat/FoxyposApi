@@ -12,9 +12,9 @@ require("dotenv").config();
 const indexRouter = require("./routes/index");
 const authRouter = require("./routes/auth");
 const orderRoutes = require("./routes/orderRoutes");
-const stockRoutes = require("./routes/stockRoutes");
 const userRoutes = require("./routes/userRoutes");
-const reportRoutes = require("./routes/reportRoutes");
+const menuRoutes = require("./routes/menuRoutes");
+const paymentRoutes = require("./routes/paymentRoutes");
 
 const app = express();
 const server = http.createServer(app);
@@ -22,7 +22,8 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     origin: "*",
-    methods: ["GET", "POST"],
+    methods: ["GET", "POST", "PUT"],
+    credentials: true,
   },
 });
 
@@ -40,8 +41,10 @@ io.on("connection", (socket) => {
 // Middleware (GENERATOR STYLE)
 // =====================
 app.use(cors({
-  origin: "http://localhost:5173",
-  credentials: true
+  // Development is accessed from phones using a LAN/VPN IP, which can change.
+  // Authentication remains enforced by the protected route middleware.
+  origin: true,
+  credentials: true,
 }));
 
 app.use(logger("dev"));
@@ -57,10 +60,9 @@ app.use("/", indexRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/tables", require("./routes/tableRoutes"));
 app.use("/api", orderRoutes);
-app.use("/api/stock", stockRoutes);
 app.use("/api/users", userRoutes);
-app.use("/api/reports", reportRoutes);
-
+app.use("/api/menus", menuRoutes);
+app.use("/api/payments", paymentRoutes);
 // =====================
 // 404 handler
 // =====================

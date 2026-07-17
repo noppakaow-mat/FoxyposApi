@@ -1,28 +1,40 @@
 const express = require("express");
 const router = express.Router();
-const { createOrder } = require("../controllers/orderController");
 
-// mock DB
-let orders = [];
+const {
+  createOrder,
+  getPendingOrders,
+  markOrderServed,
+  getOrdersBySession
+} = require("../controllers/orderController");
 
-router.post("/orders", createOrder);
 
-router.get("/orders/pending", (req, res) => {
-  const pending = orders.filter(o => o.status === "pending");
-  res.json(pending);
-});
+// CREATE ORDER
+router.post(
+  "/orders",
+  createOrder
+);
 
-router.put("/orders/:id/served", (req, res) => {
-  const { id } = req.params;
 
-  orders = orders.map(o =>
-    o.id == id ? { ...o, status: "served" } : o
-  );
+// KITCHEN ORDERS
+router.get(
+  "/orders/kitchen",
+  getPendingOrders
+);
 
-  const io = req.app.get("io");
-  io.emit("order_served", { id });
 
-  res.json({ message: "updated" });
-});
+// SERVED
+router.put(
+  "/orders/:id/served",
+  markOrderServed
+);
+
+
+// CUSTOMER HISTORY
+router.get(
+  "/orders/session/:sessionId",
+  getOrdersBySession
+);
+
 
 module.exports = router;
