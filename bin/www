@@ -12,6 +12,7 @@ var debug = require('debug')('foxyposapi:server');
  */
 
 var port = normalizePort(process.env.PORT || '3000');
+var host = process.env.HOST || '0.0.0.0';
 app.set('port', port);
 
 /**
@@ -24,7 +25,7 @@ app.set('port', port);
  */
 
 function startServer(listenPort, maxAttempts) {
-  server.listen(listenPort);
+  server.listen(listenPort, host);
 
   server.on('error', function(error) {
     if (error.syscall !== 'listen') {
