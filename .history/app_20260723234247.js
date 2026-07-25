@@ -15,8 +15,7 @@ const orderRoutes = require("./routes/orderRoutes");
 const userRoutes = require("./routes/userRoutes");
 const menuRoutes = require("./routes/menuRoutes");
 const paymentRoutes = require("./routes/paymentRoutes");
-const stockRoutes = require ("./routes/stockRoutes")
-const dashboardRoutes = require("./routes/dashboardRoutes");
+c
 
 const app = express();
 const server = http.createServer(app);
@@ -65,8 +64,6 @@ app.use("/api", orderRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/menus", menuRoutes);
 app.use("/api/payments", paymentRoutes);
-app.use("/api/stocks", stockRoutes);
-app.use("/api/dashboard", dashboardRoutes);
 // =====================
 // 404 handler
 // =====================

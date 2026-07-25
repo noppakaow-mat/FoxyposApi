@@ -66,7 +66,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/menus", menuRoutes);
 app.use("/api/payments", paymentRoutes);
 app.use("/api/stocks", stockRoutes);
-app.use("/api/dashboard", dashboardRoutes);
+
 // =====================
 // 404 handler
 // =====================

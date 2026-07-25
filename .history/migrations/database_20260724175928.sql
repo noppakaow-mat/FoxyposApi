@@ -149,3 +149,6 @@ ADD COLUMN IF NOT EXISTS minimum_stock INT DEFAULT 10;
 ALTER TABLE products
 ADD COLUMN IF NOT EXISTS is_complimentary BOOLEAN DEFAULT FALSE;
 
+ALTER TABLE users
+ADD CONSTRAINT users_role_check
+CHECK (role IN ('manager','cashier','kitchen'));

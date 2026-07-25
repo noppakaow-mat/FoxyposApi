@@ -99,24 +99,28 @@ VALUES
 -- USERS
 -- =====================
 
-INSERT INTO users (
-    username,
-    password_hash,
-    role
+INSERT INTO users
+(
+ username,
+ password_hash,
+ role
 )
 VALUES
 (
-    'cashier1',
-    '$2b$10$/GcrdPqSKcBP3XCG9N7/t.eSsY7SpzjQLMaupDbv9KUJ.mNzFOWgm',
-    'cashier'
+ 'cashier1',
+ '$2b$10$/GcrdPqSKcBP3XCG9N7/t.eSsY7SpzjQLMaupDbv9KUJ.mNzFOWgm',
+ 'cashier'
 ),
+
 (
-    'kitchen1',
-    '$2b$10$/GcrdPqSKcBP3XCG9N7/t.eSsY7SpzjQLMaupDbv9KUJ.mNzFOWgm',
-    'kitchen'
-),
-(
-    'manager1',
-    '$2b$10$/GcrdPqSKcBP3XCG9N7/t.eSsY7SpzjQLMaupDbv9KUJ.mNzFOWgm',
-    'manager'
+ 'kitchen1',
+ '$2b$10$/GcrdPqSKcBP3XCG9N7/t.eSsY7SpzjQLMaupDbv9KUJ.mNzFOWgm',
+ 'kitchen'
 );
+
+(
+ 'manager1',
+ '$2b$10$/GcrdPqSKcBP3XCG9N7/t.eSsY7SpzjQLMaupDbv9KUJ.mNzFOWgm',
+ 'kitchen'
+);
+

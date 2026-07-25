@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS users (
     username VARCHAR(50) UNIQUE NOT NULL,
     password_hash TEXT NOT NULL,
     role VARCHAR(20) NOT NULL CHECK (
-        role IN ('manager','cashier', 'kitchen')
+        role IN (''cashier', 'kitchen')
     ),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -136,16 +136,3 @@ CREATE TABLE IF NOT EXISTS payments (
     paid_at TIMESTAMP,
     created_at TIMESTAMP DEFAULT NOW()
 );
-
-ALTER TABLE products
-ADD COLUMN IF NOT EXISTS image_url TEXT;
-
-ALTER TABLE products
-ADD COLUMN IF NOT EXISTS stock_quantity INT DEFAULT 0;
-
-ALTER TABLE products
-ADD COLUMN IF NOT EXISTS minimum_stock INT DEFAULT 10;
-
-ALTER TABLE products
-ADD COLUMN IF NOT EXISTS is_complimentary BOOLEAN DEFAULT FALSE;
-
