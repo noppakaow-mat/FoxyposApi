@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 
+const upload = require("../middlewares/uploadMiddleware");
+
 const {
   getStocks,
   getStockById,
@@ -9,41 +11,43 @@ const {
   deleteStock,
   increaseStock,
   decreaseStock,
+  uploadStockExcel,
 } = require("../controllers/stockController");
 
-// ==========================
-// GET ALL PRODUCTS
-// ==========================
+
+// GET ALL STOCK
 router.get("/", getStocks);
 
-// ==========================
-// GET PRODUCT BY ID
-// ==========================
+
+// UPLOAD EXCEL
+router.post(
+    "/upload",
+    upload.single("file"),
+    uploadStockExcel
+);
+
+// GET BY ID
 router.get("/:id", getStockById);
 
-// ==========================
-// CREATE PRODUCT
-// ==========================
+
+// CREATE
 router.post("/", createStock);
 
-// ==========================
-// UPDATE PRODUCT
-// ==========================
+
+// UPDATE
 router.put("/:id", updateStock);
 
-// ==========================
-// DELETE PRODUCT
-// ==========================
+
+// DELETE
 router.delete("/:id", deleteStock);
 
-// ==========================
-// INCREASE STOCK
-// ==========================
-router.patch("/:id/increase", increaseStock);
 
-// ==========================
-// DECREASE STOCK
-// ==========================
-router.patch("/:id/decrease", decreaseStock);
+// INCREASE
+router.put("/:id/increase", increaseStock);
+
+
+// DECREASE
+router.put("/:id/decrease", decreaseStock);
+
 
 module.exports = router;

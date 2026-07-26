@@ -3,12 +3,34 @@ const router = express.Router();
 
 const userController = require("../controllers/userController");
 const auth = require("../middlewares/authMiddleware");
-const adminOnly = require("../middlewares/roleMiddleware");
+const roleMiddleware = require("../middlewares/roleMiddleware");
 
-// Admin only routes
-router.get("/", auth, adminOnly, userController.getUsers);
-router.post("/", auth, adminOnly, userController.createUser);
-router.put("/:id/role", auth, adminOnly, userController.updateUserRole);
-router.delete("/:id", auth, adminOnly, userController.deleteUser);
+router.get(
+  "/",
+  auth,
+  roleMiddleware("manager"),
+  userController.getUsers
+);
+
+router.post(
+  "/",
+  auth,
+  roleMiddleware("manager"),
+  userController.createUser
+);
+
+router.put(
+  "/:id/role",
+  auth,
+  roleMiddleware("manager"),
+  userController.updateUserRole
+);
+
+router.delete(
+  "/:id",
+  auth,
+  roleMiddleware("manager"),
+  userController.deleteUser
+);
 
 module.exports = router;
