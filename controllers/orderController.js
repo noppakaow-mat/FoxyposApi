@@ -217,40 +217,132 @@ const getPendingOrders = async (req, res) => {
 // MARK ORDER SERVED
 // ============================================================================
 const markOrderServed = async (req, res) => {
+  const client = await pool.connect();
+
   try {
-    const result = await pool.query(
+
+    await client.query("BEGIN");
+
+    // ============================
+    // ตรวจสอบ Order
+    // ============================
+    const orderResult = await client.query(
       `
-      UPDATE orders
-      SET status = 'served'
-      WHERE id = $1 AND status = 'pending'
-      RETURNING id, status, created_at
+      SELECT *
+      FROM orders
+      WHERE id=$1
+      AND status='pending'
       `,
       [req.params.id]
     );
 
-    if (!result.rows.length) {
+    if (!orderResult.rows.length) {
+
+      await client.query("ROLLBACK");
+
       return res.status(404).json({
         message: "Order not found"
       });
+
     }
 
+    // ============================
+    // ดึงรายการสินค้า
+    // ============================
+    const itemResult = await client.query(
+      `
+      SELECT
+        product_id,
+        quantity
+      FROM order_items
+      WHERE order_id=$1
+      `,
+      [req.params.id]
+    );
+
+    // ============================
+    // หัก Stock
+    // ============================
+    for (const item of itemResult.rows) {
+
+      const stock = await client.query(
+        `
+        SELECT stock_quantity
+        FROM products
+        WHERE id=$1
+        `,
+        [item.product_id]
+      );
+
+      if (!stock.rows.length) {
+        throw new Error("Product not found");
+      }
+
+      if (stock.rows[0].stock_quantity < item.quantity) {
+        throw new Error("Stock not enough");
+      }
+
+      await client.query(
+        `
+        UPDATE products
+        SET stock_quantity = stock_quantity - $1
+        WHERE id=$2
+        `,
+        [
+          item.quantity,
+          item.product_id
+        ]
+      );
+
+    }
+
+    // ============================
+    // เปลี่ยนสถานะ
+    // ============================
+    const result = await client.query(
+      `
+      UPDATE orders
+      SET status='served'
+      WHERE id=$1
+      RETURNING id,status,created_at
+      `,
+      [req.params.id]
+    );
+
+    await client.query("COMMIT");
+
     const io = req.app.get("io");
+
     if (io) {
+
       io.emit("orderServed", {
         id: result.rows[0].id,
-        status: result.rows[0].status
+        status: "served"
       });
+
     }
 
     res.json({
       message: "Order served",
       order: result.rows[0]
     });
+
   } catch (err) {
-    console.error("MARK ORDER SERVED ERROR:", err);
-    res.status(500).json({ message: "Server Error" });
+
+    await client.query("ROLLBACK");
+
+    console.error(err);
+
+    res.status(500).json({
+      message: err.message
+    });
+
+  } finally {
+
+    client.release();
+
   }
-};
+};  
 
 // ============================================================================
 // GET CUSTOMER ORDER HISTORY
